@@ -31,7 +31,19 @@ function showTool(tool) {
         </div>`;
       break;
 
-   
+    case "quotation":
+      area.innerHTML = `
+        <div class='tool-box'>
+          <h3>Quotation Approval (AI)</h3>
+          <label>Total Order Value (₹):</label>
+          <input type='number' id='qValue'>
+          <label>Discount (%):</label>
+          <input type='number' id='qDisc'>
+          <button onclick='approveQuote()'>Check AI Approval</button>
+          <div class='result' id='quoteResult'></div>
+        </div>`;
+      break;
+
     case "payment":
       area.innerHTML = `
         <div class='tool-box'>
@@ -88,4 +100,3 @@ function submitPayment() {
 
 // Load default tool
 showTool("discount");
-
