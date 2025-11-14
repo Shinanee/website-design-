@@ -37,21 +37,7 @@ function showTool(tool) {
         </div>`;
       break;
 
-    case "quotation":
-      area.innerHTML = `
-        <div class='tool-box'>
-          <h3>Quotation Approval (AI)</h3>
-          <label>Total Order Value (₹):</label>
-          <input type='number' id='qValue'>
-          <label>Discount (%):</label>
-          <input type='number' id='qDisc'>
-          <button onclick='approveQuote()'>Check AI Approval</button>
-          <div class='result' id='quoteResult'></div>
-        </div>`;
-      break;
-
-    default:
-      area.innerHTML = `<div class='tool-box'><h3>${tool.toUpperCase()} Module (AI Coming Soon)</h3><p>AI automation under development...</p></div>`;
+    
   }
 }
 
@@ -152,3 +138,4 @@ function updateReceivedPayments() {
 
 // Load default tool
 showTool("payment");
+
