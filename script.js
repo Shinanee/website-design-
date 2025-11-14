@@ -1,3 +1,5 @@
+let paymentHistory = [];
+
 function showTool(tool) {
   document.querySelectorAll('.sidebar a').forEach(a => a.classList.remove('active'));
   event.target.classList.add('active');
@@ -5,6 +7,10 @@ function showTool(tool) {
   area.innerHTML = "";
 
   switch (tool) {
+    case "payment":
+      renderPaymentForm(area);
+      break;
+
     case "discount":
       area.innerHTML = `
         <div class='tool-box'>
@@ -31,20 +37,16 @@ function showTool(tool) {
         </div>`;
       break;
 
- 
-
-    case "payment":
+    case "quotation":
       area.innerHTML = `
         <div class='tool-box'>
-          <h3>Payment Form</h3>
-          <label>Customer Name:</label><input id='pName'>
-          <label>Amount (₹):</label><input id='pAmount' type='number'>
-          <label>Payment Mode:</label>
-          <select id='pMode'>
-            <option>Cash</option><option>Online</option><option>Card</option>
-          </select>
-          <button onclick='submitPayment()'>Submit Payment</button>
-          <div class='result' id='paymentResult'></div>
+          <h3>Quotation Approval (AI)</h3>
+          <label>Total Order Value (₹):</label>
+          <input type='number' id='qValue'>
+          <label>Discount (%):</label>
+          <input type='number' id='qDisc'>
+          <button onclick='approveQuote()'>Check AI Approval</button>
+          <div class='result' id='quoteResult'></div>
         </div>`;
       break;
 
@@ -79,14 +81,74 @@ function approveQuote() {
   document.getElementById("quoteResult").innerHTML = `AI Suggestion: <b>${aiDecision}</b>`;
 }
 
+// ======= Payment Form + Received Payments =======
+function renderPaymentForm(area) {
+  area.innerHTML = `
+    <div class='tool-box'>
+      <h3>Payment Form</h3>
+      <label>Customer Name:</label>
+      <input id='pName'>
+      <label>Amount (₹):</label>
+      <input id='pAmount' type='number'>
+      <label>Payment Mode:</label>
+      <select id='pMode'>
+        <option>Cash</option>
+        <option>Online</option>
+        <option>Card</option>
+      </select>
+      <button onclick='submitPayment()'>Submit Payment</button>
+      <div class='result' id='paymentResult'></div>
+
+      <div class='payment-list'>
+        <h4>Received Payments</h4>
+        <div id='receivedPayments'></div>
+      </div>
+    </div>`;
+
+  updateReceivedPayments();
+}
+
 function submitPayment() {
-  let name = document.getElementById("pName").value;
-  let amt = document.getElementById("pAmount").value;
+  let name = document.getElementById("pName").value.trim();
+  let amt = document.getElementById("pAmount").value.trim();
   let mode = document.getElementById("pMode").value;
-  if (!name || !amt) { alert("Please enter all fields"); return; }
-  document.getElementById("paymentResult").innerHTML = `Payment of ₹${amt} via ${mode} received for ${name}.`;
+
+  if (!name || !amt) {
+    alert("Please enter all fields");
+    return;
+  }
+
+  const payment = {
+    name,
+    amount: parseFloat(amt),
+    mode,
+    date: new Date().toLocaleString()
+  };
+
+  paymentHistory.push(payment);
+  document.getElementById("paymentResult").innerHTML = `✅ Payment of ₹${amt} via ${mode} received for ${name}.`;
+
+  updateReceivedPayments();
+}
+
+function updateReceivedPayments() {
+  const container = document.getElementById("receivedPayments");
+  if (!container) return;
+
+  if (paymentHistory.length === 0) {
+    container.innerHTML = "<p>No payments received yet.</p>";
+    return;
+  }
+
+  container.innerHTML = paymentHistory.map(p => `
+    <div class="payment-item">
+      <b>${p.name}</b><br>
+      Amount: ₹${p.amount.toFixed(2)}<br>
+      Mode: ${p.mode}<br>
+      Date: ${p.date}
+    </div>
+  `).join("");
 }
 
 // Load default tool
-showTool("discount");
-
+showTool("payment");
