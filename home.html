@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>RAK LED Solutions | Quotation</title>
-  <link rel="icon" href="rak_logo.png" type="image/png">
+  <link rel="icon" href="rak_logo.png" type="image/png">  
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
   <style>
     *{box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif;}
@@ -46,7 +46,8 @@
 
     <section class="card">
       <h2>Customer Details</h2>
-      <form id="reqForm">
+      
+     <form id="reqForm" action="https://docs.google.com/spreadsheets/d/184zeAXbZIVCLwwLe16xXyDODjGYSdeH2iWG1YwXFy1E/edit?gid=0#gid=0" method="post">
         <label>Customer Name<input id="custName" required></label>
         <label>Contact<input id="custContact"></label>
         <label>Email<input id="custEmail" type="email" placeholder="customer@example.com"></label>
@@ -101,7 +102,7 @@
     </section>
 
     <section class="card" id="quoteCard">
-      <h2>Quotation Summary</h2>
+      <h2>Quotation Summary </h2>
       <div id="quoteSummary">No quotation generated yet.</div>
     </section>
   </div>
@@ -246,7 +247,6 @@ const moduleOptions = {
           <p><strong>RAK LED SOLUTIONS</strong><br>
           Ground Floor, FA-332A, Block FA, Mansarover Garden, New Delhi – 110015<br>
           📞 8595942581 / 9218089721 | ✉ sales.rakled@gmail.com | 🌐 www.rakledsolutions.com</p>
-          <p><em>This is a system-generated quotation.</em></p>
         </div>
       </div>`;
 
@@ -262,7 +262,27 @@ const moduleOptions = {
         if(!el){alert('Generate a quotation first!');return;}
         html2pdf().set({filename:'RAK_Quotation.pdf',margin:10}).from(el).save();
       });
-    });
-  </script>
+    })
+
+
+
+
+
+
+
+
+
+
+$('calcBtn').addEventListener('click', () => {
+  renderQuote();
+  $('reqForm').submit();  // Auto submit form to SheetDB
+});
+
+
+    
+
+</script>
+
 </body>
+
 </html>
