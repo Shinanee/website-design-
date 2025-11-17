@@ -47,7 +47,7 @@
     <section class="card">
       <h2>Customer Details</h2>
       
-     <form id="reqForm" action="https://docs.google.com/spreadsheets/d/184zeAXbZIVCLwwLe16xXyDODjGYSdeH2iWG1YwXFy1E/edit?gid=0#gid=0" method="post">
+     <form id="reqForm">
         <label>Customer Name<input id="custName" required></label>
         <label>Contact<input id="custContact"></label>
         <label>Email<input id="custEmail" type="email" placeholder="customer@example.com"></label>
@@ -273,10 +273,6 @@ const moduleOptions = {
 
 
 
-$('calcBtn').addEventListener('click', () => {
-  renderQuote();
-  $('reqForm').submit();  // Auto submit form to SheetDB
-});
 
 
     
@@ -286,3 +282,4 @@ $('calcBtn').addEventListener('click', () => {
 </body>
 
 </html>
+
