@@ -184,8 +184,9 @@
   </div>
 
 <script>
+
 /* -----------------------------------------------------
-   🔥 FETCH CUSTOMER LIST FROM GOOGLE SHEET (SHEET2)
+   🔥 FETCH FULL CUSTOMER DATA FROM GOOGLE SHEET (SHEET2)
 ----------------------------------------------------- */
 function loadCustomers() {
   fetch("https://sheetdb.io/api/v1/wscx2mjzye5dz?sheet=Sheet2")
@@ -197,8 +198,7 @@ function loadCustomers() {
       data.forEach(cust => {
         dropdown.innerHTML += `
           <option value="${cust["Customer Name"]}"
-                  data-contact="${cust["Contact"]}"
-                  data-email="${cust["Email"]}">
+            data-json='${JSON.stringify(cust)}'>
             ${cust["Customer Name"]}
           </option>`;
       });
@@ -207,20 +207,55 @@ function loadCustomers() {
 }
 
 /* -----------------------------------------------------
-   🔥 AUTO-FILL WHEN CUSTOMER SELECTED
+   🔥 AUTO-FILL FULL CUSTOMER HISTORY WHEN SELECTED
 ----------------------------------------------------- */
 document.getElementById("customerSelect").addEventListener("change", function () {
-  let selected = this.options[this.selectedIndex];
+  if (!this.value) return;
 
-  document.getElementById("custName").value = selected.value || "";
-  document.getElementById("custContact").value = selected.dataset.contact || "";
-  document.getElementById("custEmail").value = selected.dataset.email || "";
+  let custData = JSON.parse(
+    this.options[this.selectedIndex].dataset.json
+  );
+
+  // BASIC FIELDS
+  document.getElementById("custName").value = custData["Customer Name"] || "";
+  document.getElementById("custContact").value = custData["Contact"] || "";
+  document.getElementById("custEmail").value = custData["Email"] || "";
+
+  // ENVIRONMENT
+  if (custData["Environment"] === "Indoor")
+    document.querySelector('input[value="Indoor"]').checked = true;
+  else if (custData["Environment"] === "Outdoor")
+    document.querySelector('input[value="Outdoor"]').checked = true;
+
+  // MODULE TYPE
+  populateModules(custData["Environment"].toLowerCase());
+  setTimeout(() => {
+    document.getElementById("moduleType").value = custData["Module Type"];
+  }, 200);
+
+  // SIZE + QUANTITY
+  document.getElementById("width").value = custData["Width"] || "";
+  document.getElementById("height").value = custData["Height"] || "";
+  document.getElementById("quantity").value = custData["Quantity"] || "";
+
+  // EXTRA CHARGES
+  document.getElementById("mediaPlayer").value = custData["Media Player Amount"] || 0;
+  document.getElementById("videoProcessor").value = custData["Video Processor Amount"] || 0;
+  document.getElementById("packaging").value = custData["Packaging"] || 0;
+  document.getElementById("transport").value = custData["Transport"] || 0;
+  document.getElementById("installRate").value = custData["Installation Rate"] || 0;
+  document.getElementById("discount").value = custData["Discount Amount"] || 0;
+  document.getElementById("gst").value = custData["GST Amount"] || 18;
+
+  // Auto-generate quotation
+  renderQuote();
+  fillBackendFields(calcQuote());
 });
 
 
 
 /* -----------------------------------------------------
-   🔥 LED MODULE + QUOTATION SYSTEM (YOUR ORIGINAL CODE)
+   🔥 MODULE + QUOTATION SYSTEM (YOUR ORIGINAL CODE)
 ----------------------------------------------------- */
 
 const modulePriceList = {
@@ -329,55 +364,28 @@ function renderQuote(){
 
   const html=`
     <div id="quotationPDF">
-      <div class="quote-header">
-        <div>
-          <strong>Date:</strong> ${dateStr}<br>
-          <strong>Valid till:</strong> ${validTill}<br>
-          <strong>Quote No.:</strong> ${quoteNo}
-        </div>
-        <div>
-          <strong>Prepared for:</strong> ${cust}<br>
-          <strong>Contact:</strong> ${contact}<br>
-          <strong>Email:</strong> ${email}
-        </div>
-      </div>
-
-      <p><strong>Screen Size:</strong> ${q.w}ft × ${q.h}ft = ${q.area.toFixed(1)} sqft × ${q.qty} = ${q.totalArea.toFixed(1)} sqft total</p>
+      <strong>Date:</strong> ${dateStr} <br>
+      <strong>Valid till:</strong> ${validTill} <br>
+      <strong>Quote No.:</strong> ${quoteNo} <br><br>
+      <strong>Customer:</strong> ${cust} <br>
+      <strong>Contact:</strong> ${contact} <br>
+      <strong>Email:</strong> ${email} <br><br>
 
       <table class="quote-table">
-        <tr><th>Description</th><th>Unit Price</th><th>Qty</th><th>Units</th><th>Amount</th></tr>
-        <tr><td><b>RAK - ${q.mod}</b><br>${q.env.toUpperCase()} LED Module with High Brightness, Refresh >3840Hz, MS-PC Cabinet</td>
-          <td>${formatMoney(q.baseRate)}</td><td>${q.totalArea.toFixed(1)}</td><td>Sqft</td><td>${formatMoney(q.moduleAmount)}</td></tr>
-        <tr><td>Media Player</td><td>${formatMoney(q.sender)}</td><td>1</td><td>Pcs</td><td>${formatMoney(q.sender)}</td></tr>
-        <tr><td>Video Processor</td><td>${formatMoney(q.video)}</td><td>1</td><td>Pcs</td><td>${formatMoney(q.video)}</td></tr>
-        <tr><td>Packaging</td><td>-</td><td>-</td><td>Set</td><td>${formatMoney(q.pack)}</td></tr>
-        <tr><td>Transportation</td><td>-</td><td>1</td><td>Set</td><td>${formatMoney(q.trans)}</td></tr>
-        <tr><td>Installation</td><td>${formatMoney(parseFloat($('installRate').value))}</td><td>${q.totalArea.toFixed(1)}</td><td>Sqft</td><td>${formatMoney(q.install)}</td></tr>
+        <tr><th>Description</th><th>Amount</th></tr>
+        <tr><td>LED Module</td><td>${formatMoney(q.moduleAmount)}</td></tr>
+        <tr><td>Media Player</td><td>${formatMoney(q.sender)}</td></tr>
+        <tr><td>Video Processor</td><td>${formatMoney(q.video)}</td></tr>
+        <tr><td>Packaging</td><td>${formatMoney(q.pack)}</td></tr>
+        <tr><td>Transport</td><td>${formatMoney(q.trans)}</td></tr>
+        <tr><td>Installation</td><td>${formatMoney(q.install)}</td></tr>
       </table>
 
       <div class="quote-total">
         <div>Subtotal: ${formatMoney(q.subtotal)}</div>
-        <div>Discount: -${formatMoney(q.discount)}</div>
-        <div>Taxable Value: ${formatMoney(q.taxable)}</div>
-        <div>GST (18%): ${formatMoney(q.gst)}</div>
-        <div class="quote-grand">Total Amount: ${formatMoney(q.total)}</div>
-      </div>
-
-      <div class="terms">
-        <h4>TERMS AND CONDITIONS:</h4>
-        <ol>
-          <li>1 Year warranty against manufacturing defects.</li>
-          <li>Freight extra as applicable.</li>
-          <li>Fabrication & electricals at site are client responsibility.</li>
-          <li>Delivery: 10–15 days.</li>
-          <li>Payment Terms: 50% advance.</li>
-        </ol>
-      </div>
-
-      <div class="footer">
-        <p><strong>RAK LED SOLUTIONS</strong><br>
-        Ground Floor, FA-332A, Mansarover Garden, New Delhi<br>
-        Contact: 8595942581 / 9218089721</p>
+        <div>Discount: ${formatMoney(q.discount)}</div>
+        <div>Tax: ${formatMoney(q.gst)}</div>
+        <div class="quote-grand">Total: ${formatMoney(q.total)}</div>
       </div>
     </div>`;
 
@@ -406,6 +414,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     html2pdf().set({filename:'RAK_Quotation.pdf',margin:10}).from(el).save();
   });
 });
+
 </script>
 
 </body>
