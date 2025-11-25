@@ -49,7 +49,14 @@
       
      <form id="reqForm" action="https://sheetdb.io/api/v1/wscx2mjzye5dz" method="post">
 
-    <!-- CUSTOMER FIELDS -->
+    <!-- 🔥 CUSTOMER DROPDOWN (AUTO-FETCH FROM GOOGLE SHEET SHEET2) -->
+    <label>Select Customer
+      <select id="customerSelect">
+        <option value="">-- Select Customer --</option>
+      </select>
+    </label>
+
+    <!-- AUTO-FILL CUSTOMER DATA -->
     <label>Customer Name
       <input type="text" name="data[Customer Name]" id="custName">
     </label>
@@ -177,6 +184,45 @@
   </div>
 
 <script>
+/* -----------------------------------------------------
+   🔥 FETCH CUSTOMER LIST FROM GOOGLE SHEET (SHEET2)
+----------------------------------------------------- */
+function loadCustomers() {
+  fetch("https://sheetdb.io/api/v1/wscx2mjzye5dz?sheet=Sheet2")
+    .then(res => res.json())
+    .then(data => {
+      const dropdown = document.getElementById("customerSelect");
+      dropdown.innerHTML = `<option value="">-- Select Customer --</option>`;
+
+      data.forEach(cust => {
+        dropdown.innerHTML += `
+          <option value="${cust["Customer Name"]}"
+                  data-contact="${cust["Contact"]}"
+                  data-email="${cust["Email"]}">
+            ${cust["Customer Name"]}
+          </option>`;
+      });
+    })
+    .catch(err => console.error("Sheet2 Fetch Error:", err));
+}
+
+/* -----------------------------------------------------
+   🔥 AUTO-FILL WHEN CUSTOMER SELECTED
+----------------------------------------------------- */
+document.getElementById("customerSelect").addEventListener("change", function () {
+  let selected = this.options[this.selectedIndex];
+
+  document.getElementById("custName").value = selected.value || "";
+  document.getElementById("custContact").value = selected.dataset.contact || "";
+  document.getElementById("custEmail").value = selected.dataset.email || "";
+});
+
+
+
+/* -----------------------------------------------------
+   🔥 LED MODULE + QUOTATION SYSTEM (YOUR ORIGINAL CODE)
+----------------------------------------------------- */
+
 const modulePriceList = {
   "P10 Red DIP": { series: "Outdoor", price: 2020 },
   "P10 RGB 2727": { series: "Outdoor", price: 2400 },
@@ -267,10 +313,8 @@ function fillBackendFields(q){
   $('taxableData').value=q.taxable;
   $('gstData').value=q.gst;
   $('totalData').value=q.total;
-
-  $('AmountData').value = q.total;
+  $('AmountData').value=q.total;
 }
-
 
 function renderQuote(){
   const q=calcQuote();
@@ -341,6 +385,10 @@ function renderQuote(){
 }
 
 document.addEventListener('DOMContentLoaded',()=>{
+
+  /* LOAD CUSTOMER DROPDOWN */
+  loadCustomers();
+
   populateModules('indoor');
 
   document.querySelectorAll('input[name="environment"]').forEach(r=>{
@@ -360,8 +408,5 @@ document.addEventListener('DOMContentLoaded',()=>{
 });
 </script>
 
-
-
 </body>
 </html>
-
