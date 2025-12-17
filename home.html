@@ -61,7 +61,7 @@
       <input type="text" name="data[Customer Name]" id="custName">
     </label>
 
-    <label>Contact
+    <label>Mobile No.
       <input type="text" name="data[Contact]" id="custContact">
     </label>
 
@@ -165,7 +165,8 @@
     <input type="hidden" name="data[GST Amount]" id="gstData">
     <input type="hidden" name="data[Grand Total]" id="totalData">
     <input type="hidden" name="data[Total  Amount]" id="AmountData">
-    
+    <input type="hidden" name="data[Login ID]" id="loginIdData">
+
     
 
     <div class="actions">
@@ -189,7 +190,7 @@
    🔥 FETCH FULL CUSTOMER DATA FROM GOOGLE SHEET (SHEET2)
 ----------------------------------------------------- */
 function loadCustomers() {
-  fetch("https://sheetdb.io/api/v1/wscx2mjzye5dz?sheet=Sheet2")
+  fetch("https://sheetdb.io/api/v1/wscx2mjzye5dz?Quotation=Quotation2")
     .then(res => res.json())
     .then(data => {
       const dropdown = document.getElementById("customerSelect");
@@ -349,7 +350,11 @@ function fillBackendFields(q){
   $('gstData').value=q.gst;
   $('totalData').value=q.total;
   $('AmountData').value=q.total;
+
+  // 🔥 Hidden Login ID
+  $('loginIdData').value = getLoginID();
 }
+
 
 function renderQuote(){
   const q=calcQuote();
@@ -417,5 +422,49 @@ document.addEventListener('DOMContentLoaded',()=>{
 
 </script>
 
+
+
+
+
+
+
+
+
+
+<script>
+function loadClientLoginData() {
+  fetch("https://sheetdb.io/api/v1/wscx2mjzye5dz?sheet=Client login")
+    .then(res => res.json())
+    .then(data => {
+      if (!data.length) return;
+
+      // Example: first logged-in user ka data
+      const user = data[0]; 
+
+      // Auto-fill fields
+      document.getElementById("custName").value = user["Customer Name"] || "";
+      document.getElementById("custContact").value = user["Mobile No."] || "";
+      document.getElementById("custEmail").value = user["Email"] || "";
+
+      // Hidden Login ID (backend save ke liye)
+      document.getElementById("loginIdData").value = user["Login ID"] || "";
+    })
+    .catch(err => console.error("Client Login Fetch Error:", err));
+}
+
+// Page load par call
+document.addEventListener("DOMContentLoaded", loadClientLoginData);
+</script>
+
+
+</script>
+
+
+
+
+
+
+
 </body>
 </html>
+
