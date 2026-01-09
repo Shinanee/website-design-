@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Processing Form</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .payment-form {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .payment-section {
+            margin-bottom: 25px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .payment-status {
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 4px;
+        }
+        
+        .status-pending {
+            background-color: #fff3cd;
+            border: 1px solid #ffeeba;
+            color: #856404;
+        }
+        
+        .status-verified {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        
+        .payment-proof {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px dashed #ccc;
+        }
+        
+        .verification-section {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #eee;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .btn-submit {
+            background-color: #007bff;
+            color: white;
+        }
+        
+        .btn-verify {
+            background-color: #28a745;
+            color: white;
+        }
+        
+        .btn-reject {
+            background-color: #dc3545;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="payment-form">
+            <h2>Payment Processing Form</h2>
+            
+            <form id="paymentProcessForm">
+                <div class="payment-section">
+                    <h3>Customer Information</h3>
+                    <div class="form-group">
+                        <label for="customerName">Customer Name</label>
+                        <input type="text" id="customerName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="customerEmail">Email</label>
+                        <input type="email" id="customerEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="quotationNumber">Quotation Reference Number</label>
+                        <input type="text" id="quotationNumber" required>
+                    </div>
+                </div>
+
+                <div class="payment-section">
+                    <h3>Payment Details</h3>
+                    <div class="form-group">
+                        <label for="paymentMethod">Payment Method</label>
+                        <select id="paymentMethod" required>
+                            <option value="">Select Payment Method</option>
+                            <option value="bank_transfer">Bank Transfer</option>
+                            <option value="check">Check/Cheque</option>
+                            <option value="upi">UPI Transfer</option>
+                            <option value="card">Card Payment</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="amount">Amount (₹)</label>
+                        <input type="number" id="amount" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="transactionId">Transaction ID/Check Number</label>
+                        <input type="text" id="transactionId" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="paymentDate">Payment Date</label>
+                        <input type="date" id="paymentDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="paymentProof">Upload Payment Proof</label>
+                        <input type="file" id="paymentProof" accept="image/*,.pdf" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="remarks">Additional Remarks</label>
+                    <textarea id="remarks" rows="3" style="width: 100%; padding: 10px;"></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-submit">Submit Payment Details</button>
+            </form>
+
+            <div class="payment-status status-pending" id="paymentStatus">
+                <h4>Payment Status: <span id="statusText">Pending Verification</span></h4>
+                <p>Submitted on: <span id="submissionDate"></span></p>
+            </div>
+
+            <div class="verification-section" id="ownerVerification">
+                <h3>Owner Verification</h3>
+                <form id="verificationForm">
+                    <div class="form-group">
+                        <label for="ownerPassword">Owner Password</label>
+                        <input type="password" id="ownerPassword" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="verificationNotes">Verification Notes</label>
+                        <textarea id="verificationNotes" rows="2" style="width: 100%; padding: 10px;"></textarea>
+                    </div>
+                    <button type="button" class="btn btn-verify" onclick="verifyPayment()">Verify Payment</button>
+                    <button type="button" class="btn btn-reject" onclick="rejectPayment()">Reject Payment</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('paymentProcessForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            // Update submission date
+            const now = new Date();
+            document.getElementById('submissionDate').textContent = now.toLocaleString();
+            
+            // Simulate form submission
+            alert('Payment details submitted successfully! Awaiting owner verification.');
+        });
+
+        function verifyPayment() {
+            const password = document.getElementById('ownerPassword').value;
+            if (password === 'owner123') { // In real application, use proper authentication
+                document.getElementById('statusText').textContent = 'Verified';
+                document.getElementById('paymentStatus').classList.remove('status-pending');
+                document.getElementById('paymentStatus').classList.add('status-verified');
+                alert('Payment verified successfully!');
+            } else {
+                alert('Invalid owner password!');
+            }
+        }
+
+        function rejectPayment() {
+            const password = document.getElementById('ownerPassword').value;
+            if (password === 'owner123') { // In real application, use proper authentication
+                document.getElementById('statusText').textContent = 'Rejected';
+                document.getElementById('paymentStatus').style.backgroundColor = '#f8d7da';
+                document.getElementById('paymentStatus').style.borderColor = '#f5c6cb';
+                document.getElementById('paymentStatus').style.color = '#721c24';
+                alert('Payment rejected. Customer will be notified.');
+            } else {
+                alert('Invalid owner password!');
+            }
+        }
+
+        // Update form based on payment method
+        document.getElementById('paymentMethod').addEventListener('change', function(e) {
+            const transactionLabel = document.querySelector('label[for="transactionId"]');
+            switch(e.target.value) {
+                case 'check':
+                    transactionLabel.textContent = 'Check Number';
+                    break;
+                case 'bank_transfer':
+                    transactionLabel.textContent = 'UTR Number/Reference ID';
+                    break;
+                case 'upi':
+                    transactionLabel.textContent = 'UPI Transaction ID';
+                    break;
+                case 'card':
+                    transactionLabel.textContent = 'Card Transaction ID';
+                    break;
+            }
+        });
+    </script>
+</body>
+</html>

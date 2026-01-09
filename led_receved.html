@@ -1,0 +1,86 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Received Payments - Owner View</title>
+  <link rel="stylesheet" href="led_payment.css">
+</head>
+<body>
+  <div class="received-container">
+    <h2>Received Payment Check (Owner View)</h2>
+
+    <div id="ownerLogin">
+      <h3>Owner Login</h3>
+      <input type="password" id="ownerPassword" placeholder="Enter Owner Password" />
+      <button onclick="loginOwner()">Login</button>
+      <p id="loginMsg" style="color:red;"></p>
+    </div>
+
+    <div id="paymentSection" style="display:none;">
+      <table id="paymentTable">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Customer</th>
+            <th>Mobile</th>
+            <th>Invoice</th>
+            <th>Amount</th>
+            <th>Mode</th>
+            <th>Status</th>
+            <th>Owner Action</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    // Password for owner access (you can change this)
+    const OWNER_PASSWORD = "rakled2025";
+
+    function loginOwner() {
+      const entered = document.getElementById("ownerPassword").value;
+      if (entered === OWNER_PASSWORD) {
+        document.getElementById("ownerLogin").style.display = "none";
+        document.getElementById("paymentSection").style.display = "block";
+        loadPayments();
+      } else {
+        document.getElementById("loginMsg").textContent = "❌ Wrong password!";
+      }
+    }
+
+    function loadPayments() {
+      const tableBody = document.querySelector("#paymentTable tbody");
+      tableBody.innerHTML = "";
+      const payments = JSON.parse(localStorage.getItem("payments")) || [];
+
+      payments.forEach((p, i) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${p.date}</td>
+          <td>${p.name}</td>
+          <td>${p.mobile}</td>
+          <td>${p.invoice}</td>
+          <td>₹${p.amount}</td>
+          <td>${p.mode}</td>
+          <td><span class="status ${p.status === 'Received' ? 'received' : 'pending'}">${p.status}</span></td>
+          <td>
+            ${p.status === 'Pending' ? `<button onclick="markReceived(${i}, this)">Mark Received</button>` : '✅ Verified'}
+          </td>
+        `;
+        tableBody.appendChild(row);
+      });
+    }
+
+    function markReceived(index, btn) {
+      let payments = JSON.parse(localStorage.getItem("payments"));
+      payments[index].status = "Received";
+      localStorage.setItem("payments", JSON.stringify(payments));
+      loadPayments();
+    }
+  </script>
+</body>
+</html>

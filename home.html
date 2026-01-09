@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>RAK LED Solutions | Quotation</title>
+  <link rel="icon" href="rak_logo.png" type="image/png">  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
+
+  <style>
+    *{box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif;}
+    body{background:#f3f6fb;color:#0b2545;margin:0;padding:24px;}
+    .container{max-width:1000px;margin:0 auto;}
+    .logo{width:120px;margin-bottom:10px;}
+    header{text-align:center;margin-bottom:20px;}
+    .card{background:#fff;border-radius:8px;padding:16px;margin-bottom:14px;box-shadow:0 2px 8px rgba(12,34,64,0.06);}
+    h1,h2{margin:0 0 10px 0;}
+    .row{display:flex;gap:12px;flex-wrap:wrap;}
+    form label{display:block;margin-bottom:8px;flex:1;}
+    input,select,button{padding:8px;border-radius:4px;border:1px solid #d6e0ef;width:100%;}
+    .actions{margin-top:14px;text-align:center;}
+    button{background:#1e90ff;color:#fff;border:none;padding:10px 18px;border-radius:6px;cursor:pointer;}
+    button:hover{background:#156ed6;}
+    #quoteSummary{background:#fff;padding:16px;border:1px solid #e2e8f0;border-radius:8px;margin-top:8px;}
+
+    .quote-header{display:flex;justify-content:space-between;margin-bottom:12px;font-size:14px;}
+    .quote-table{width:100%;border-collapse:collapse;margin-top:12px;font-size:14px;}
+    .quote-table th,.quote-table td{border:1px solid #ccc;padding:6px;text-align:left;}
+    .quote-table th{text-align:center;background:#f0f3f8;}
+    .quote-total{margin-top:14px;text-align:right;}
+    .quote-total div{margin:3px 0;}
+    .quote-grand{font-weight:bold;font-size:16px;border-top:2px solid #000;margin-top:6px;padding-top:6px;}
+    .footer{margin-top:24px;font-size:13px;text-align:center;line-height:1.4;}
+    .terms h4{margin-bottom:4px;}
+    .terms ol{margin:6px 0 0 16px;padding:0;font-size:13px;}
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <img src="logo-removebg-preview.png" alt="RAK LED Solutions" class="logo">
+      <h1>LED Screen Quotation</h1>
+      <p>Create customer quotations with auto-calculated LED pricing, GST & Terms.</p>
+    </header>
+
+    <section class="card">
+      <h2>Customer Details</h2>
+      
+     <form id="reqForm" action="https://sheetdb.io/api/v1/wscx2mjzye5dz" method="post">
+
+    <!-- 🔥 CUSTOMER DROPDOWN (AUTO-FETCH FROM GOOGLE SHEET SHEET2) -->
+    <label>Select Customer
+      <select id="customerSelect">
+        <option value="">-- Select Customer --</option>
+      </select>
+    </label>
+
+    <!-- AUTO-FILL CUSTOMER DATA -->
+    <label>Customer Name
+      <input type="text" name="data[Customer Name]" id="custName">
+    </label>
+
+    <label>Contact
+      <input type="text" name="data[Contact]" id="custContact">
+    </label>
+
+    <label>Email
+      <input type="email" name="data[Email]" id="custEmail">
+    </label>
+
+    <!-- RADIO -->
+    <div class="row">
+      <label><input type="radio" name="environment" value="Indoor" checked> Indoor</label>
+      <label><input type="radio" name="environment" value="Outdoor"> Outdoor</label>
+    </div>
+
+    <!-- MODULE -->
+    <div class="row">
+      <label>Module Type
+        <select id="moduleType"></select>
+      </label>
+    </div>
+
+    <!-- SIZE -->
+    <div class="row">
+      <label>Width (ft)
+        <input type="number" id="width" step="0.1" value="10">
+      </label>
+
+      <label>Height (ft)
+        <input type="number" id="height" step="0.1" value="6">
+      </label>
+
+      <label>Quantity
+        <input type="number" id="quantity" value="1">
+      </label>
+    </div>
+
+    <!-- MEDIA DEVICES -->
+    <div class="row">
+      <label>Media Player
+        <select id="mediaPlayer">
+          <option value="0">None</option>
+          <option value="18000">Basic Player (₹18,000)</option>
+          <option value="20000">Advanced Player (₹20,000)</option>
+          <option value="25000">Professional Player (₹25,000)</option>
+        </select>
+      </label>
+
+      <label>Video Processor
+        <select id="videoProcessor">
+          <option value="0">None</option>
+          <option value="18000">Basic Player (₹18,000)</option>
+          <option value="25000">Basic Processor (₹25,000)</option>
+          <option value="40000">Advanced Processor (₹40,000)</option>
+        </select>
+      </label>
+    </div>
+
+    <!-- COSTS -->
+    <div class="row">
+      <label>Packaging (₹)
+        <input type="number" id="packaging" value="0">
+      </label>
+
+      <label>Transportation (₹)
+        <input type="number" id="transport" value="0">
+      </label>
+
+      <label>Installation (₹/sqft)
+        <input type="number" id="installRate" value="0">
+      </label>
+    </div>
+
+    <!-- DISCOUNT / GST -->
+    <div class="row">
+      <label>Discount (%)
+        <input type="number" id="discount" value="0">
+      </label>
+
+      <label>GST (%)
+        <input type="number" id="gst" value="18">
+      </label>
+    </div>
+
+    <!-- 🔥 ALL FIXED HIDDEN FIELDS -->
+    <input type="hidden" name="data[Environment]" id="envData">
+    <input type="hidden" name="data[Module Type]" id="modData">
+    <input type="hidden" name="data[Width]" id="widthData">
+    <input type="hidden" name="data[Height]" id="heightData">
+    <input type="hidden" name="data[Quantity]" id="qtyData">
+    <input type="hidden" name="data[Total Area]" id="totalAreaData">
+    <input type="hidden" name="data[Base Rate]" id="baseRateData">
+    <input type="hidden" name="data[Module Amount]" id="moduleAmountData">
+    <input type="hidden" name="data[Media Player Amount]" id="senderData">
+    <input type="hidden" name="data[Video Processor Amount]" id="videoData">
+    <input type="hidden" name="data[Packaging]" id="packData">
+    <input type="hidden" name="data[Transport]" id="transData">
+    <input type="hidden" name="data[Installation Rate]" id="instRateData">
+    <input type="hidden" name="data[Installation Amount]" id="installData">
+    <input type="hidden" name="data[Subtotal]" id="subtotalData">
+    <input type="hidden" name="data[Discount Amount]" id="discountData">
+    <input type="hidden" name="data[Taxable Value]" id="taxableData">
+    <input type="hidden" name="data[GST Amount]" id="gstData">
+    <input type="hidden" name="data[Grand Total]" id="totalData">
+    <input type="hidden" name="data[Total  Amount]" id="AmountData">
+    
+    
+
+    <div class="actions">
+      <button type="submit">Save to Backend</button>
+      <button type="button" id="calcBtn">Generate Quotation</button>
+      <button type="button" id="downloadBtn">Download PDF</button>
+    </div>
+</form>
+
+    </section>
+
+    <section class="card">
+      <h2>Quotation Summary</h2>
+      <div id="quoteSummary">No quotation generated yet.</div>
+    </section>
+  </div>
+
+<script>
+/* -----------------------------------------------------
+   🔥 FETCH CUSTOMER LIST FROM GOOGLE SHEET (SHEET2)
+----------------------------------------------------- */
+function loadCustomers() {
+  fetch("https://sheetdb.io/api/v1/wscx2mjzye5dz?sheet=Sheet2")
+    .then(res => res.json())
+    .then(data => {
+      const dropdown = document.getElementById("customerSelect");
+      dropdown.innerHTML = `<option value="">-- Select Customer --</option>`;
+
+      data.forEach(cust => {
+        dropdown.innerHTML += `
+          <option value="${cust["Customer Name"]}"
+                  data-contact="${cust["Contact"]}"
+                  data-email="${cust["Email"]}">
+            ${cust["Customer Name"]}
+          </option>`;
+      });
+    })
+    .catch(err => console.error("Sheet2 Fetch Error:", err));
+}
+
+/* -----------------------------------------------------
+   🔥 AUTO-FILL WHEN CUSTOMER SELECTED
+----------------------------------------------------- */
+document.getElementById("customerSelect").addEventListener("change", function () {
+  let selected = this.options[this.selectedIndex];
+
+  document.getElementById("custName").value = selected.value || "";
+  document.getElementById("custContact").value = selected.dataset.contact || "";
+  document.getElementById("custEmail").value = selected.dataset.email || "";
+});
+
+
+
+/* -----------------------------------------------------
+   🔥 LED MODULE + QUOTATION SYSTEM (YOUR ORIGINAL CODE)
+----------------------------------------------------- */
+
+const modulePriceList = {
+  "P10 Red DIP": { series: "Outdoor", price: 2020 },
+  "P10 RGB 2727": { series: "Outdoor", price: 2400 },
+  "P10 RGB 3535": { series: "Outdoor", price: 3170 },
+  "P6.66 2727": { series: "Outdoor", price: 3780 },
+  "P6 2727": { series: "Outdoor", price: 3860 },
+  "P6 2525": { series: "Outdoor", price: 4030 },
+  "P4": { series: "Outdoor", price: 4110 },
+  "P4 Pro": { series: "Outdoor", price: 4830 },
+  "P3.076": { series: "Outdoor", price: 6020 },
+  "P2.5": { series: "Outdoor", price: 9330 },
+
+  "P4 Indoor": { series: "Indoor", price: 3480 },
+  "P2.5 Indoor": { series: "Indoor", price: 3860 },
+  "P2.5 Pro": { series: "Indoor", price: 4600 },
+  "G2 GOB": { series: "Indoor", price: 7090 },
+  "P2": { series: "Indoor", price: 5530 },
+  "P1.86": { series: "Indoor", price: 5830 },
+  "C1.86 COB (640X480)": { series: "Indoor", price: 9770 },
+  "P1.53": { series: "Indoor", price: 9270 },
+  "G1.53 GOB": { series: "Indoor", price: 10080 },
+  "C1.53 COB (640X480)": { series: "Indoor", price: 13620 },
+  "C1.5 COB (600X337.5)": { series: "Indoor", price: 18870 },
+  "P1.25": { series: "Indoor", price: 14300 },
+  "G1.25 GOB": { series: "Indoor", price: 15090 },
+  "C1.25 COB (600X337.5)": { series: "Indoor", price: 20800 }
+};
+
+const moduleOptions = {
+  outdoor: ["P10 Red DIP","P10 RGB 2727","P10 RGB 3535","P6.66 2727","P6 2727","P6 2525","P4","P4 Pro","P3.076","P2.5"],
+  indoor: ["P4 Indoor","P2.5 Indoor","P2.5 Pro","G2 GOB","P2","P1.86","C1.86 COB (640X480)","P1.53","G1.53 GOB","C1.53 COB (640X480)","C1.5 COB (600X337.5)","P1.25","G1.25 GOB","C1.25 COB (600X337.5)"]
+};
+
+function $(id){return document.getElementById(id);}
+function formatMoney(v){return '₹'+v.toLocaleString('en-IN',{minimumFractionDigits:2});}
+
+function populateModules(env){
+  const select=$('moduleType');
+  select.innerHTML='';
+  moduleOptions[env].forEach(m=>{
+    select.innerHTML += `<option value="${m}">${m}</option>`;
+  });
+}
+
+function calcQuote(){
+  const env=document.querySelector('input[name="environment"]:checked').value;
+  const mod=$('moduleType').value;
+  const w=parseFloat($('width').value)||0;
+  const h=parseFloat($('height').value)||0;
+  const qty=parseInt($('quantity').value)||1;
+  const area=w*h, totalArea=area*qty;
+  const baseRate=modulePriceList[mod]?.price||0;
+  const moduleAmount=totalArea*baseRate;
+
+  const sender=parseFloat($('mediaPlayer').value)||0;
+  const video=parseFloat($('videoProcessor').value)||0;
+  const pack=parseFloat($('packaging').value)||0;
+  const trans=parseFloat($('transport').value)||0;
+  const installRate=parseFloat($('installRate').value)||0;
+  const install=installRate*totalArea;
+
+  const subtotal=moduleAmount+sender+video+pack+trans+install;
+  const discount=subtotal*(parseFloat($('discount').value)||0)/100;
+  const taxable=subtotal-discount;
+  const gst=taxable*(parseFloat($('gst').value)||18)/100;
+  const total=taxable+gst;
+
+  return {env,mod,w,h,qty,area,totalArea,baseRate,moduleAmount,sender,video,pack,trans,install,subtotal,discount,taxable,gst,total};
+}
+
+function fillBackendFields(q){
+  $('envData').value=q.env;
+  $('modData').value=q.mod;
+  $('widthData').value=q.w;
+  $('heightData').value=q.h;
+  $('qtyData').value=q.qty;
+  $('totalAreaData').value=q.totalArea;
+  $('baseRateData').value=q.baseRate;
+  $('moduleAmountData').value=q.moduleAmount;
+  $('senderData').value=q.sender;
+  $('videoData').value=q.video;
+  $('packData').value=q.pack;
+  $('transData').value=q.trans;
+  $('instRateData').value=$('installRate').value;
+  $('installData').value=q.install;
+  $('subtotalData').value=q.subtotal;
+  $('discountData').value=q.discount;
+  $('taxableData').value=q.taxable;
+  $('gstData').value=q.gst;
+  $('totalData').value=q.total;
+  $('AmountData').value=q.total;
+}
+
+function renderQuote(){
+  const q=calcQuote();
+  const cust=$('custName').value||'Customer';
+  const contact=$('custContact').value||'-';
+  const email=$('custEmail').value||'-';
+
+  const today=new Date();
+  const dateStr=today.toLocaleDateString();
+  const validTill=new Date(today.getTime()+7*86400000).toLocaleDateString();
+  const quoteNo="Q"+today.getFullYear().toString().slice(2)+(today.getMonth()+1)+today.getDate()+Math.floor(Math.random()*1000);
+
+  const html=`
+    <div id="quotationPDF">
+      <div class="quote-header">
+        <div>
+          <strong>Date:</strong> ${dateStr}<br>
+          <strong>Valid till:</strong> ${validTill}<br>
+          <strong>Quote No.:</strong> ${quoteNo}
+        </div>
+        <div>
+          <strong>Prepared for:</strong> ${cust}<br>
+          <strong>Contact:</strong> ${contact}<br>
+          <strong>Email:</strong> ${email}
+        </div>
+      </div>
+
+      <p><strong>Screen Size:</strong> ${q.w}ft × ${q.h}ft = ${q.area.toFixed(1)} sqft × ${q.qty} = ${q.totalArea.toFixed(1)} sqft total</p>
+
+      <table class="quote-table">
+        <tr><th>Description</th><th>Unit Price</th><th>Qty</th><th>Units</th><th>Amount</th></tr>
+        <tr><td><b>RAK - ${q.mod}</b><br>${q.env.toUpperCase()} LED Module with High Brightness, Refresh >3840Hz, MS-PC Cabinet</td>
+          <td>${formatMoney(q.baseRate)}</td><td>${q.totalArea.toFixed(1)}</td><td>Sqft</td><td>${formatMoney(q.moduleAmount)}</td></tr>
+        <tr><td>Media Player</td><td>${formatMoney(q.sender)}</td><td>1</td><td>Pcs</td><td>${formatMoney(q.sender)}</td></tr>
+        <tr><td>Video Processor</td><td>${formatMoney(q.video)}</td><td>1</td><td>Pcs</td><td>${formatMoney(q.video)}</td></tr>
+        <tr><td>Packaging</td><td>-</td><td>-</td><td>Set</td><td>${formatMoney(q.pack)}</td></tr>
+        <tr><td>Transportation</td><td>-</td><td>1</td><td>Set</td><td>${formatMoney(q.trans)}</td></tr>
+        <tr><td>Installation</td><td>${formatMoney(parseFloat($('installRate').value))}</td><td>${q.totalArea.toFixed(1)}</td><td>Sqft</td><td>${formatMoney(q.install)}</td></tr>
+      </table>
+
+      <div class="quote-total">
+        <div>Subtotal: ${formatMoney(q.subtotal)}</div>
+        <div>Discount: -${formatMoney(q.discount)}</div>
+        <div>Taxable Value: ${formatMoney(q.taxable)}</div>
+        <div>GST (18%): ${formatMoney(q.gst)}</div>
+        <div class="quote-grand">Total Amount: ${formatMoney(q.total)}</div>
+      </div>
+
+      <div class="terms">
+        <h4>TERMS AND CONDITIONS:</h4>
+        <ol>
+          <li>1 Year warranty against manufacturing defects.</li>
+          <li>Freight extra as applicable.</li>
+          <li>Fabrication & electricals at site are client responsibility.</li>
+          <li>Delivery: 10–15 days.</li>
+          <li>Payment Terms: 50% advance.</li>
+        </ol>
+      </div>
+
+      <div class="footer">
+        <p><strong>RAK LED SOLUTIONS</strong><br>
+        Ground Floor, FA-332A, Mansarover Garden, New Delhi<br>
+        Contact: 8595942581 / 9218089721</p>
+      </div>
+    </div>`;
+
+  $('quoteSummary').innerHTML=html;
+}
+
+document.addEventListener('DOMContentLoaded',()=>{
+
+  /* LOAD CUSTOMER DROPDOWN */
+  loadCustomers();
+
+  populateModules('indoor');
+
+  document.querySelectorAll('input[name="environment"]').forEach(r=>{
+    r.addEventListener('change',e=>populateModules(e.target.value.toLowerCase()));
+  });
+
+  $('calcBtn').addEventListener('click',()=>{
+    renderQuote();
+    fillBackendFields(calcQuote());
+  });
+
+  $('downloadBtn').addEventListener('click',()=>{
+    const el=document.getElementById('quotationPDF');
+    if(!el){alert('Generate quotation first');return;}
+    html2pdf().set({filename:'RAK_Quotation.pdf',margin:10}).from(el).save();
+  });
+});
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Simple CRUD (LocalStorage)</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    h1 { color: #333; }
+    form { margin-bottom: 20px; }
+    input, button { margin: 5px; padding: 8px; }
+    table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 10px; text-align: left; }
+    th { background: #f0f0f0; }
+    button { cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h1>CRUD App (Create, View, Delete)</h1>
+
+  <!-- Form -->
+  <form id="userForm">
+    <input type="text" id="name" placeholder="Name" required>
+    <input type="text" id="address" placeholder="Address" required>
+    <input type="text" id="phone" placeholder="Phone" required>
+    <input type="text" id="company" placeholder="Company" required>
+    <button type="submit">Add User</button>
+  </form>
+
+  <!-- Table -->
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th><th>Address</th><th>Phone</th><th>Company</th><th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="userTable"></tbody>
+  </table>
+
+  <script>
+    // Load users from LocalStorage
+    function getUsers() {
+      return JSON.parse(localStorage.getItem("users")) || [];
+    }
+
+    function saveUsers(users) {
+      localStorage.setItem("users", JSON.stringify(users));
+    }
+
+    function renderUsers() {
+      const users = getUsers();
+      const table = document.getElementById("userTable");
+      table.innerHTML = "";
+      users.forEach((u, index) => {
+        table.innerHTML += `
+          <tr>
+            <td>${u.name}</td>
+            <td>${u.address}</td>
+            <td>${u.phone}</td>
+            <td>${u.company}</td>
+            <td><button onclick="deleteUser(${index})">Delete</button></td>
+          </tr>
+        `;
+      });
+    }
+
+    document.getElementById("userForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const user = {
+        name: document.getElementById("name").value,
+        address: document.getElementById("address").value,
+        phone: document.getElementById("phone").value,
+        company: document.getElementById("company").value,
+      };
+      const users = getUsers();
+      users.push(user);
+      saveUsers(users);
+      renderUsers();
+      e.target.reset();
+    });
+
+    function deleteUser(index) {
+      const users = getUsers();
+      users.splice(index, 1);
+      saveUsers(users);
+      renderUsers();
+    }
+
+    // Initial load
+    renderUsers();
+  </script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+*{box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif;}
+body{background:#f3f6fb;color:#0b2545;margin:0;padding:24px;}
+.container{max-width:1000px;margin:0 auto;}
+.logo{width:120px;margin-bottom:10px;}
+header{text-align:center;margin-bottom:20px;}
+.card{background:#fff;border-radius:8px;padding:16px;margin-bottom:14px;box-shadow:0 2px 8px rgba(12,34,64,0.06);}
+h1,h2{margin:0 0 10px 0;}
+.row{display:flex;gap:12px;flex-wrap:wrap;}
+form label{display:block;margin-bottom:8px;flex:1;}
+input,select,button{padding:8px;border-radius:4px;border:1px solid #d6e0ef;}
+.actions{margin-top:14px;text-align:center;}
+button{background:#1e90ff;color:#fff;border:none;padding:10px 18px;border-radius:6px;cursor:pointer;}
+button:hover{background:#156ed6;}
+#quoteSummary{background:#fff;padding:16px;border:1px solid #e2e8f0;border-radius:8px;margin-top:8px;}
+.quote-header{display:flex;justify-content:space-between;margin-bottom:12px;font-size:14px;}
+.quote-table{width:100%;border-collapse:collapse;margin-top:12px;font-size:14px;}
+.quote-table th,.quote-table td{border:1px solid #dbe3f0;padding:6px 8px;text-align:left;}
+.quote-table th{background:#f1f5fb;}
+.quote-total{text-align:right;margin-top:10px;font-size:15px;}
+.quote-grand{font-size:17px;font-weight:bold;margin-top:6px;}
+.terms{margin-top:16px;font-size:13px;color:#374151;}
+.terms h4{font-size:14px;margin-bottom:6px;}
+@media(max-width:600px){.row{flex-direction:column}}

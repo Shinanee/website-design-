@@ -1,0 +1,416 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Customer Details Confirmation</title>
+  <style>
+    :root{
+      --bg:#f6f8fb;
+      --card:#ffffff;
+      --muted:#6b7280;
+      --primary:#0f6efd;
+      --accent:#06b6d4;
+      --danger:#ef4444;
+      --radius:12px;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:linear-gradient(180deg,#eef2ff, var(--bg));
+      padding:28px;
+      color:#0f172a;
+    }
+
+    .card{
+      width:100%;
+      max-width:980px;
+      background:var(--card);
+      border-radius:var(--radius);
+      box-shadow:0 8px 30px rgba(8,15,52,0.08);
+      padding:20px;
+    }
+
+    header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:14px;
+    }
+    header h1{
+      font-size:18px;
+      margin:0;
+      letter-spacing:0.2px;
+    }
+    header p{margin:0;color:var(--muted);font-size:13px}
+
+    form{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
+      align-items:start;
+    }
+
+    .full { grid-column: 1 / -1; }
+
+    label{
+      display:block;
+      font-size:13px;
+      margin-bottom:6px;
+      color:#0b1220;
+      font-weight:600;
+    }
+
+    input[type="text"],
+    input[type="tel"],
+    textarea,
+    select{
+      width:100%;
+      padding:10px 12px;
+      border-radius:10px;
+      border:1px solid #e6e9ef;
+      background:#fff;
+      outline:none;
+      font-size:14px;
+      transition:box-shadow .12s, border-color .12s;
+    }
+    textarea{min-height:92px; resize:vertical}
+    input:focus, textarea:focus, select:focus{
+      box-shadow:0 6px 18px rgba(15,110,253,0.08);
+      border-color: rgba(15,110,253,0.9);
+    }
+
+    .hint { font-size:12px; color:var(--muted); margin-top:6px; }
+
+    .row { display:flex; gap:8px; }
+    .small { flex:0 0 140px; }
+
+    .actions{
+      display:flex;
+      gap:8px;
+      justify-content:flex-end;
+      align-items:center;
+      margin-top:14px;
+      grid-column:1 / -1;
+    }
+
+    button{
+      border:0;
+      border-radius:10px;
+      padding:10px 14px;
+      font-weight:600;
+      cursor:pointer;
+    }
+    .btn-primary{ background:var(--primary); color:#fff; box-shadow:0 6px 18px rgba(15,110,253,0.12) }
+    .btn-ghost{ background:transparent; color:var(--primary); border:1px solid rgba(15,110,253,0.12) }
+    .btn-danger{ background:var(--danger); color:#fff }
+
+    .error { color:var(--danger); font-size:12px; margin-top:6px; }
+
+    /* Preview card */
+    .preview{
+      border:1px dashed #e6e9ef;
+      padding:12px;
+      border-radius:10px;
+      background:#fafafa;
+      font-size:14px;
+    }
+    .preview h3{ margin:0 0 8px 0; font-size:15px }
+    .preview-row{ display:flex; gap:8px; margin-bottom:6px; color:#0b1220 }
+    .preview-label{ width:210px; color:var(--muted); font-weight:600; }
+
+    /* Responsive */
+    @media (max-width:860px){
+      form{ grid-template-columns: 1fr; }
+      .small { flex:1 }
+      .preview-label{ width:160px }
+    }
+  </style>
+</head>
+<body>
+  <main class="card" role="main" aria-labelledby="heading">
+    <header>
+      <div>
+        <h1 id="heading">Customer Details Confirmation</h1>
+        <p>Complete and confirm customer details before moving to Purchase / Delivery.</p>
+      </div>
+      <div style="text-align:right">
+        <small class="hint">Status: <strong id="statusText">Draft</strong></small>
+      </div>
+    </header>
+
+    <form id="confirmForm" novalidate>
+      <!-- Left column -->
+      <div>
+        <label for="customerName">Customer name *</label>
+        <input id="customerName" name="customerName" type="text" placeholder="e.g., Ramesh Kumar" required>
+        <div class="error" id="errCustomerName" hidden></div>
+      </div>
+
+      <div>
+        <label for="companyName">Company</label>
+        <input id="companyName" name="companyName" type="text" placeholder="Company / Organization">
+      </div>
+
+      <div class="full">
+        <label for="address">Address *</label>
+        <textarea id="address" name="address" placeholder="Street, City, State, Pincode" required></textarea>
+        <div class="error" id="errAddress" hidden></div>
+      </div>
+
+      <div>
+        <label for="contactPerson">Contact person</label>
+        <input id="contactPerson" name="contactPerson" type="text" placeholder="Contact person name">
+      </div>
+
+      <div>
+        <label for="mobile">Mobile number *</label>
+        <input id="mobile" name="mobile" type="tel" inputmode="tel" placeholder="+91 98765 43210" required>
+        <div class="error" id="errMobile" hidden></div>
+        <div class="hint">Enter country code if outside India (e.g., +1 555 123 4567)</div>
+      </div>
+
+      <div>
+        <label for="quotationNo">Final approved quotation number *</label>
+        <input id="quotationNo" name="quotationNo" type="text" placeholder="QTN-2025-0012" required>
+        <div class="error" id="errQuotationNo" hidden></div>
+      </div>
+
+      <div class="full">
+        <label for="projectDesc">Project description</label>
+        <textarea id="projectDesc" name="projectDesc" placeholder="Short description of project / site / objectives"></textarea>
+      </div>
+
+      <div>
+        <label for="screenSize">Screen size & spec confirmation</label>
+        <input id="screenSize" name="screenSize" type="text" placeholder="e.g., 5m x 3m, P6.67, 3840x2160">
+        <div class="hint">Include size, pixel pitch, resolution, indoor/outdoor if applicable.</div>
+      </div>
+
+      <!-- Preview -->
+      <div class="full">
+        <label>Preview</label>
+        <div class="preview" id="previewBox" aria-live="polite">
+          <h3>Not saved yet — fill the form and click <em>Confirm & Save</em></h3>
+          <div style="height:8px"></div>
+          <div class="preview-row"><div class="preview-label">Customer</div><div id="pvCustomer">—</div></div>
+          <div class="preview-row"><div class="preview-label">Company</div><div id="pvCompany">—</div></div>
+          <div class="preview-row"><div class="preview-label">Address</div><div id="pvAddress">—</div></div>
+          <div class="preview-row"><div class="preview-label">Contact person</div><div id="pvContact">—</div></div>
+          <div class="preview-row"><div class="preview-label">Mobile</div><div id="pvMobile">—</div></div>
+          <div class="preview-row"><div class="preview-label">Quotation No.</div><div id="pvQuotation">—</div></div>
+          <div class="preview-row"><div class="preview-label">Project</div><div id="pvProject">—</div></div>
+          <div class="preview-row"><div class="preview-label">Screen spec</div><div id="pvScreen">—</div></div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button type="button" class="btn-ghost" id="btnClear">Clear</button>
+        <button type="button" class="btn-ghost" id="btnPreview">Quick Preview</button>
+        <button type="button" class="btn-primary" id="btnSave">Confirm & Save</button>
+        <button type="button" class="btn-danger" id="btnDownload" title="Download filled data as JSON" hidden>Download JSON</button>
+      </div>
+    </form>
+  </main>
+
+  <script>
+    // Utilities
+    const $ = id => document.getElementById(id);
+
+    // Elements
+    const form = $('confirmForm');
+    const fields = {
+      customerName: $('customerName'),
+      companyName: $('companyName'),
+      address: $('address'),
+      contactPerson: $('contactPerson'),
+      mobile: $('mobile'),
+      quotationNo: $('quotationNo'),
+      projectDesc: $('projectDesc'),
+      screenSize: $('screenSize'),
+    };
+
+    const previewEls = {
+      pvCustomer: $('pvCustomer'),
+      pvCompany: $('pvCompany'),
+      pvAddress: $('pvAddress'),
+      pvContact: $('pvContact'),
+      pvMobile: $('pvMobile'),
+      pvQuotation: $('pvQuotation'),
+      pvProject: $('pvProject'),
+      pvScreen: $('pvScreen'),
+      statusText: $('statusText'),
+      previewBox: $('previewBox'),
+    };
+
+    // ErrorEls
+    const errs = {
+      errCustomerName: $('errCustomerName'),
+      errAddress: $('errAddress'),
+      errMobile: $('errMobile'),
+      errQuotationNo: $('errQuotationNo'),
+    };
+
+    const btnSave = $('btnSave');
+    const btnPreview = $('btnPreview');
+    const btnClear = $('btnClear');
+    const btnDownload = $('btnDownload');
+
+    // Basic validation rules
+    function validate(){
+      let ok = true;
+      // reset errors
+      Object.values(errs).forEach(e => { e.hidden = true; e.textContent = ''; });
+
+      if (!fields.customerName.value.trim()){
+        errs.errCustomerName.textContent = 'Customer name is required.';
+        errs.errCustomerName.hidden = false;
+        ok = false;
+      }
+      if (!fields.address.value.trim()){
+        errs.errAddress.textContent = 'Address is required.';
+        errs.errAddress.hidden = false;
+        ok = false;
+      }
+      // mobile basic pattern: allow +, digits, spaces, hyphens; require at least 8 digits
+      const digits = fields.mobile.value.replace(/[^0-9]/g,'');
+      if (!fields.mobile.value.trim() || digits.length < 8){
+        errs.errMobile.textContent = 'Enter a valid mobile number (at least 8 digits).';
+        errs.errMobile.hidden = false;
+        ok = false;
+      }
+      if (!fields.quotationNo.value.trim()){
+        errs.errQuotationNo.textContent = 'Quotation number is required.';
+        errs.errQuotationNo.hidden = false;
+        ok = false;
+      }
+      return ok;
+    }
+
+    // Populate preview
+    function updatePreview(){
+      previewEls.pvCustomer.textContent = fields.customerName.value.trim() || '—';
+      previewEls.pvCompany.textContent = fields.companyName.value.trim() || '—';
+      previewEls.pvAddress.textContent = fields.address.value.trim() || '—';
+      previewEls.pvContact.textContent = fields.contactPerson.value.trim() || '—';
+      previewEls.pvMobile.textContent = fields.mobile.value.trim() || '—';
+      previewEls.pvQuotation.textContent = fields.quotationNo.value.trim() || '—';
+      previewEls.pvProject.textContent = fields.projectDesc.value.trim() || '—';
+      previewEls.pvScreen.textContent = fields.screenSize.value.trim() || '—';
+    }
+
+    // gather data object
+    function collectData(){
+      return {
+        customerName: fields.customerName.value.trim(),
+        companyName: fields.companyName.value.trim(),
+        address: fields.address.value.trim(),
+        contactPerson: fields.contactPerson.value.trim(),
+        mobile: fields.mobile.value.trim(),
+        quotationNo: fields.quotationNo.value.trim(),
+        projectDesc: fields.projectDesc.value.trim(),
+        screenSpec: fields.screenSize.value.trim(),
+        savedAt: new Date().toISOString()
+      };
+    }
+
+    // Save (stores to localStorage and updates UI)
+    function save(){
+      if (!validate()) return false;
+      const payload = collectData();
+      // Save to localStorage keyed by quotationNo (simple approach)
+      try {
+        const key = 'postOrder:' + payload.quotationNo;
+        localStorage.setItem(key, JSON.stringify(payload));
+        previewEls.statusText.textContent = 'Saved';
+        btnDownload.hidden = false;
+        previewEls.previewBox.querySelector('h3').textContent = 'Saved — you can download or proceed to Purchase';
+        return true;
+      } catch (err){
+        alert('Unable to save locally: ' + (err.message || err));
+        return false;
+      }
+    }
+
+    // Download JSON
+    function downloadJSON(){
+      const payload = collectData();
+      const blob = new Blob([JSON.stringify(payload, null, 2)], {type: 'application/json'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = (payload.quotationNo || 'customer-details') + '.json';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    // Clear form
+    function clearForm(){
+      if (!confirm('Clear form fields?')) return;
+      form.reset();
+      updatePreview();
+      previewEls.statusText.textContent = 'Draft';
+      btnDownload.hidden = true;
+      previewEls.previewBox.querySelector('h3').textContent = 'Not saved yet — fill the form and click Confirm & Save';
+      // hide errors
+      Object.values(errs).forEach(e => { e.hidden = true; e.textContent = ''; });
+    }
+
+    // Initial preview update bind
+    Object.values(fields).forEach(f => f.addEventListener('input', updatePreview));
+    btnPreview.addEventListener('click', () => {
+      updatePreview();
+      previewEls.previewBox.scrollIntoView({behavior:'smooth', block:'nearest'});
+    });
+
+    btnSave.addEventListener('click', () => {
+      const ok = save();
+      if (ok) {
+        // small visual feedback
+        btnSave.textContent = 'Saved ✓';
+        setTimeout(()=> btnSave.textContent = 'Confirm & Save', 1200);
+      }
+    });
+
+    btnClear.addEventListener('click', clearForm);
+    btnDownload.addEventListener('click', downloadJSON);
+
+    // keyboard: Enter on inputs shouldn't submit default
+    form.addEventListener('submit', e => e.preventDefault());
+
+    // Try to load from localStorage if quotationNo typed and exists
+    fields.quotationNo.addEventListener('change', () => {
+      const key = 'postOrder:' + fields.quotationNo.value.trim();
+      if (!fields.quotationNo.value.trim()) return;
+      const existing = localStorage.getItem(key);
+      if (existing){
+        if (confirm('Found saved data for this quotation. Load it?')) {
+          const data = JSON.parse(existing);
+          fields.customerName.value = data.customerName || '';
+          fields.companyName.value = data.companyName || '';
+          fields.address.value = data.address || '';
+          fields.contactPerson.value = data.contactPerson || '';
+          fields.mobile.value = data.mobile || '';
+          fields.projectDesc.value = data.projectDesc || '';
+          fields.screenSize.value = data.screenSpec || '';
+          updatePreview();
+          previewEls.statusText.textContent = 'Loaded';
+          btnDownload.hidden = false;
+        }
+      }
+    });
+
+    // seed preview on load
+    updatePreview();
+  </script>
+</body>
+</html>

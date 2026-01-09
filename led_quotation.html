@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>RAK LED Solutions | Quotation</title>
+  <link rel="icon" href="rak_logo.png" type="image/png">
+  <link rel="stylesheet" href="led_styles.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <img src="logo-removebg-preview.png" alt="RAK LED Solutions" class="logo">
+      <h1>LED Screen Quotation</h1>
+      <p>Create customer quotations with auto-calculated LED pricing, GST & Terms.</p>
+    </header>
+
+    <section class="card">
+      <h2>Customer Details</h2>
+      <form id="reqForm">
+        <label>Customer Name<input id="custName" required></label>
+        <label>Contact<input id="custContact"></label>
+
+        <div class="row">
+          <label class="radio"><input type="radio" name="environment" value="indoor" checked> Indoor</label>
+          <label class="radio"><input type="radio" name="environment" value="outdoor"> Outdoor</label>
+        </div>
+
+        <div class="row">
+          <label>Module Type<select id="moduleType"></select></label>
+        </div>
+
+        <div class="row">
+          <label>Width (m)<input type="number" id="width" step="0.01" value="3"></label>
+          <label>Height (m)<input type="number" id="height" step="0.01" value="2"></label>
+          <label>Quantity<input type="number" id="quantity" value="1"></label>
+        </div>
+
+        <div class="row">
+          <label>Discount (%)<input type="number" id="discount" value="0"></label>
+          <label>GST (%)<input type="number" id="gst" value="18"></label>
+        </div>
+
+        <div class="actions">
+          <button type="button" id="calcBtn">Generate Quotation</button>
+          <button type="button" id="downloadBtn">Download PDF</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="card" id="quoteCard">
+      <h2>Quotation Summary</h2>
+      <div id="quoteSummary">No quotation generated yet.</div>
+    </section>
+  </div>
+
+
+  
+
+  <script src="led_app.js"></script>
+</body>
+</html>
